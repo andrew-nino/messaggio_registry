@@ -1,0 +1,6 @@
+version: "3"
+
+tasks:
+  build_migrate:
+    cmds:
+      - go run cmd/migrate/main.go -migration-path=schema -username= -password=qwerty -host= -port= -db_name= -ssl_mode=
