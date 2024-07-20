@@ -9,6 +9,13 @@ func (s *ApplicationServices) RegisterClient(client models.Client) (int, error) 
 		s.log.Error("Error registering client to BD: ", err)
 		return 0, err
 	}
+
+	err = s.sender.SendToBroker(id, client)
+	if err != nil {
+		s.log.Error("Error sending data to broker: ", err)
+		return 0, err
+	}
+
 	return id, nil
 }
 

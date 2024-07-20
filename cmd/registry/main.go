@@ -15,7 +15,7 @@ func main() {
 
 	log := SetLogrus(cfg.Log.Level)
 
-	application := app.NewApplication(log, cfg.HTTP.Port, &cfg.PG)
+	application := app.NewApplication(log, cfg.HTTP.Port, cfg)
 
 	go application.HTTPServer.MustRun()
 

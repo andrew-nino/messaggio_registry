@@ -10,10 +10,11 @@ import (
 
 type (
 	Config struct {
-		App  `yaml:"app"`
-		HTTP `yaml:"http"`
-		Log  `yaml:"log"`
-		PG   `yaml:"postgres"`
+		App   `yaml:"app"`
+		HTTP  `yaml:"http"`
+		Log   `yaml:"log"`
+		PG    `yaml:"postgres"`
+		Kafka `yaml:"kafka"`
 	}
 
 	App struct {
@@ -39,6 +40,10 @@ type (
 		ConnAttempts int           `yaml:"connAttempts" default:"10"`
 		ConnTimeout  time.Duration `yaml:"connTimeout" default:"1s"`
 	}
+	Kafka struct {
+        Brokers string `env-required:"true" yaml:"brokers" env:"KAFKA_BROKERS"`
+        Topic   string   `env-required:"true" yaml:"topic" env:"KAFKA_TOPIC"`
+    }
 )
 
 // Reads the configuration from the specified path.
