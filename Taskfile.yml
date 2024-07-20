@@ -3,7 +3,7 @@ version: "3"
 tasks:
   build_migrate:
     cmds:
-      - go run cmd/migrate/main.go -migration-path=schema -username= -password=qwerty -host= -port= -db_name= -ssl_mode=
+      - go run cmd/migrator/main.go -migration-path=schema -username=postgres -password=qwerty -host=localhost -port=5432 -db_name=postgres -ssl_mode=
   run_app:
     cmds:
       - CONFIG_PATH=./config/config.yaml go run cmd/registry/main.go cmd/registry/logger.go

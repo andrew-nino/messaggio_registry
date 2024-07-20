@@ -1,27 +1,30 @@
 package service
 
 import (
+	"github.com/andrew-nino/messaggio/internal/domain/models"
 	"github.com/sirupsen/logrus"
 )
 
-type UserSaver interface {
-	AddClient(id string) error
+type Clients interface {
+	RegisterClientOnRepo(models.Client) (int, error)
+	UpdateClientOnRepo(models.Client) error
+	DeleteClientOnRepo(id int) error
+}
+
+type ApprovalService interface {
+	SetApproval(models.Answer) error
 }
 
 type ApplicationServices struct {
-	log       *logrus.Logger
-	userSaver UserSaver
+	log      *logrus.Logger
+	clients  Clients
+	approval ApprovalService
 }
 
-func New(log *logrus.Logger, userSaver UserSaver) *ApplicationServices {
+func New(log *logrus.Logger, clients Clients, approval ApprovalService) *ApplicationServices {
 	return &ApplicationServices{
-		log:       log,
-		userSaver: userSaver,
+		log:      log,
+		clients:  clients,
+		approval: approval,
 	}
-}
-
-func (s *ApplicationServices) RegisterClient() error {
-	s.userSaver.AddClient("32")
-	s.log.Info("Service RegisterClient is successful")
-	return nil
 }

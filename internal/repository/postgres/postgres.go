@@ -12,6 +12,10 @@ import (
 	_ "github.com/lib/pq"
 )
 
+const (
+	clientsTable = "clients"
+)
+
 type Postgres struct {
 	log          *logrus.Logger
 	connAttempts int

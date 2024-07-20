@@ -23,7 +23,7 @@ type Server struct {
 
 func New(log *logrus.Logger, services *service.ApplicationServices, port string) *Server {
 
-	handler := v1.NewHandler(log, services)
+	handler := v1.NewHandler(log, services, services)
 
 	httpServer := &http.Server{
 		Addr:           ":" + port,
