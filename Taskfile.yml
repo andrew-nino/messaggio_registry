@@ -4,3 +4,6 @@ tasks:
   build_migrate:
     cmds:
       - go run cmd/migrate/main.go -migration-path=schema -username= -password=qwerty -host= -port= -db_name= -ssl_mode=
+  run_app:
+    cmds:
+      - CONFIG_PATH=./config/config.yaml go run cmd/registry/main.go cmd/registry/logger.go

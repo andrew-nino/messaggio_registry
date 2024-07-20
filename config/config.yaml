@@ -1,0 +1,19 @@
+app:
+  name: "messaggio"
+  version: "1.0.0"
+
+postgres:
+  username: "postgres"
+  host: "localhost"
+  port: "5432"
+  dbname: "postgres"
+  sslmode: "disable"
+  password: "qwerty"
+  connAttempts: 10
+  connTimeout: "1ms"
+
+http:
+  port: 8888
+
+log:
+  level: "debug"
