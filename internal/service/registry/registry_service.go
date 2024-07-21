@@ -10,11 +10,12 @@ func (s *ApplicationServices) RegisterClient(client models.Client) (int, error) 
 		return 0, err
 	}
 
-	err = s.sender.SendToBroker(id, client)
-	if err != nil {
-		s.log.Error("Error sending data to broker: ", err)
-		return 0, err
-	}
+	go func() {
+		err = s.sender.SendToBroker(id, client)
+		if err != nil {
+			s.log.Error("Error sending data to broker: ", err)
+		}
+	}()
 
 	return id, nil
 }
