@@ -10,6 +10,7 @@ type Registry interface {
 	RegisterClient(models.Client) (int, error)
 	UpdateClient(models.Client) error
 	DeleteClient(id int) error
+	GetStatistic() (models.Statistic, error)
 }
 
 type Approval interface {
@@ -39,6 +40,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		auth.POST("/add", h.addClient)
 		auth.PUT("/update", h.updateClient)
 		auth.DELETE("/delete/:id", h.deleteClient)
+		auth.GET("/statistic", h.getStatistic)
 	}
 
 	approval := router.Group("/approval")

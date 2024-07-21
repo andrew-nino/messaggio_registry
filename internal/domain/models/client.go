@@ -8,3 +8,10 @@ type Client struct {
 	Email      string `bd:"email" json:"email" binding:"required"`
 	Approve    int    `bd:"approve" json:"approve" default:"0"`
 }
+
+type Statistic struct {
+	TotalClients int `json:"total_clients"`
+	Approved     int `json:"approved"`
+	Unapproved   int `json:"unapproved"`
+	Waiting      int `json:"waiting"`
+}

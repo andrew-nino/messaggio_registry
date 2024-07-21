@@ -9,6 +9,7 @@ type Clients interface {
 	RegisterClientOnRepo(models.Client) (int, error)
 	UpdateClientOnRepo(models.Client) error
 	DeleteClientOnRepo(id int) error
+	GetStatisticOnRepo() (models.Statistic, error)
 }
 
 type ApprovalService interface {

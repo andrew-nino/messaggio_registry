@@ -39,3 +39,12 @@ func (s *ApplicationServices) DeleteClient(clientID int) error {
 	}
 	return nil
 }
+
+func(s *ApplicationServices) GetStatistic() (models.Statistic, error){
+	statistic, err := s.clients.GetStatisticOnRepo()
+    if err!= nil {
+        s.log.Error("Error getting statistic from BD: ", err)
+        return models.Statistic{}, err
+    }
+    return statistic, nil
+}

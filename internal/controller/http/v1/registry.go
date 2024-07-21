@@ -69,3 +69,14 @@ func (h *Handler) deleteClient(c *gin.Context) {
 		"message": "Client deleted successfully",
 	})
 }
+
+func (h *Handler) getStatistic(c *gin.Context) {
+
+	statistic, err := h.services.GetStatistic()
+	if err != nil {
+		h.log.Printf("error getStatistic: %v", err)
+		newErrorResponse(c, http.StatusInternalServerError, "internal server error")
+		return
+	}
+	c.JSON(http.StatusOK, statistic)
+}

@@ -67,3 +67,22 @@ func (p *Postgres) DeleteClientOnRepo(id int) error {
 	}
 	return nil
 }
+
+func (p *Postgres) GetStatisticOnRepo() (models.Statistic, error) {
+
+	var statistic models.Statistic
+
+    query := fmt.Sprintf(`SELECT count(*) as total_clients,
+								 count(case when approval = 1 then 1 end) as approved,
+								 count(case when approval = -1 then 1 end) as unapproved,
+								 count(case when approval = 0 then 1 end) as waiting 
+								 FROM %s`, clientsTable)
+
+	row := p.db.QueryRow(query)
+	err := row.Scan(&statistic.TotalClients, &statistic.Approved, &statistic.Unapproved, &statistic.Waiting)
+	if err!= nil {
+        p.log.Debugf("repository.GetStatisticOnRepo - row.Scan : %v", err)
+        return statistic, err
+    }
+	return statistic, nil
+}
