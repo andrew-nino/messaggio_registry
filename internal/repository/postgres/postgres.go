@@ -8,6 +8,7 @@ import (
 	"github.com/andrew-nino/messaggio/config"
 	"github.com/sirupsen/logrus"
 
+	"github.com/golang-migrate/migrate/v4"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 )
@@ -28,6 +29,18 @@ func New(log *logrus.Logger, cfg *config.PG) *Postgres {
 	db, err := NewPostgresDB(cfg)
 	if err != nil {
 		panic(err)
+	}
+
+	// Migrates running
+	log.Info("Migrates running...")
+	m := NewMigration(cfg)
+	err = m.Up()
+	if err != nil {
+		if err == migrate.ErrNoChange {
+			log.Print("no migrations to apply")
+		} else {
+			log.Fatalf("failed to apply migrations: %s", err.Error())
+		}
 	}
 
 	return &Postgres{

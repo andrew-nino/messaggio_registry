@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"encoding/json"
+	"os"
 	"strconv"
 	"strings"
 
@@ -19,6 +20,13 @@ type producer struct {
 }
 
 func New(log *logrus.Logger, cfg *config.Kafka) *producer {
+
+	if len(cfg.Brokers) == 0 {
+		cfg.Brokers = os.Getenv("KAFKA_BROKERS")
+	}
+	if len(cfg.Topic) == 0 {
+        cfg.Topic = os.Getenv("KAFKA_TOPIC")
+    }
 
 	addrs := strings.Split(cfg.Brokers, ",")
 	topic := cfg.Topic

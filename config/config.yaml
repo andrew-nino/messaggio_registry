@@ -4,7 +4,7 @@ app:
 
 postgres:
   username: "postgres"
-  host: "localhost"
+  host: "postgres"
   port: "5432"
   dbname: "postgres"
   sslmode: "disable"
@@ -19,5 +19,5 @@ log:
   level: "debug"
 
 kafka:
-  brokers: "localhost:9092"
+  brokers: "kafka:9092"
   topic: "messaggio"
