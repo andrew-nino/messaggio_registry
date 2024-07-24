@@ -5,6 +5,8 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+//go:generate mockgen -source=service.go -destination=mocks/mock.go
+
 type Clients interface {
 	RegisterClientOnRepo(models.Client) (int, error)
 	UpdateClientOnRepo(models.Client) error

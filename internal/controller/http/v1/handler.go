@@ -6,6 +6,8 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+//go:generate mockgen -source=handler.go -destination=mocks/mock.go
+
 type Registry interface {
 	RegisterClient(models.Client) (int, error)
 	UpdateClient(models.Client) error
