@@ -8,6 +8,7 @@ import (
 type Clients interface {
 	RegisterClientOnRepo(models.Client) (int, error)
 	UpdateClientOnRepo(models.Client) error
+	GetClientFromRepo(id int) (models.Client, error)
 	DeleteClientOnRepo(id int) error
 	GetStatisticOnRepo() (models.Statistic, error)
 }

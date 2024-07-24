@@ -6,7 +6,7 @@ type Client struct {
 	Name       string `bd:"name" json:"name"`
 	Patronymic string `bd:"patronymic" json:"patronymic"`
 	Email      string `bd:"email" json:"email" binding:"required"`
-	Approve    int    `bd:"approve" json:"approve" default:"0"`
+	Approval    int    `bd:"approval" json:"approval" default:"0"`
 }
 
 type Statistic struct {

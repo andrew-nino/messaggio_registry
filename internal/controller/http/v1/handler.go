@@ -9,6 +9,7 @@ import (
 type Registry interface {
 	RegisterClient(models.Client) (int, error)
 	UpdateClient(models.Client) error
+	GetClient(int) (models.Client, error)
 	DeleteClient(id int) error
 	GetStatistic() (models.Statistic, error)
 }
@@ -39,6 +40,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	{
 		auth.POST("/add", h.addClient)
 		auth.PUT("/update", h.updateClient)
+		auth.GET("/get/:id", h.getClient)
 		auth.DELETE("/delete/:id", h.deleteClient)
 		auth.GET("/statistic", h.getStatistic)
 	}

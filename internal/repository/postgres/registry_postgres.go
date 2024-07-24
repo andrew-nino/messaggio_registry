@@ -55,6 +55,18 @@ func (p *Postgres) UpdateClientOnRepo(client models.Client) error {
 	return nil
 }
 
+func (p *Postgres) GetClientFromRepo(id int) (models.Client, error) {
+
+	var client models.Client
+    query := fmt.Sprintf(`SELECT id, surname, name, patronymic, email, approval FROM %s WHERE id = $1`, clientsTable)
+    err := p.db.Get(&client, query, id)
+    if err!= nil {
+        p.log.Debugf("repository.GetClientFromRepo - Get : %v", err)
+        return client, err
+    }
+    return client, nil
+}
+
 func (p *Postgres) DeleteClientOnRepo(id int) error {
 
 	var checkID int

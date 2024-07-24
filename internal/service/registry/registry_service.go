@@ -30,6 +30,16 @@ func (s *ApplicationServices) UpdateClient(client models.Client) error {
 	return nil
 }
 
+func (s *ApplicationServices) GetClient(clientID int) (models.Client, error) {
+
+	client, err := s.clients.GetClientFromRepo(clientID)
+    if err!= nil {
+        s.log.Errorf("Error getting client %d from BD: %v", clientID, err)
+        return models.Client{}, err
+    }
+    return client, nil
+}
+
 func (s *ApplicationServices) DeleteClient(clientID int) error {
 
 	err := s.clients.DeleteClientOnRepo(clientID)

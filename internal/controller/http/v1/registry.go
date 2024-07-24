@@ -50,6 +50,24 @@ func (h *Handler) updateClient(c *gin.Context) {
 	})
 }
 
+func (h *Handler) getClient(c *gin.Context) {
+	
+	id, err := strconv.Atoi(c.Param("id"))
+    if err!= nil {
+        newErrorResponse(c, http.StatusBadRequest, "invalid client ID")
+        return
+    }
+
+    client, err := h.services.GetClient(id)
+    if err!= nil {
+        h.log.Printf("error GetClient: %v", err)
+        newErrorResponse(c, http.StatusInternalServerError, "internal server error")
+        return
+    }
+
+    c.JSON(http.StatusOK, client)
+}
+
 func (h *Handler) deleteClient(c *gin.Context) {
 
 	id, err := strconv.Atoi(c.Param("id"))
