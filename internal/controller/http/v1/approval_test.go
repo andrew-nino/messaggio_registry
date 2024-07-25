@@ -18,7 +18,7 @@ import (
 
 func TestHandler_updateStatus(t *testing.T) {
 
-	type mockBehavior func(r *handler_mocks.MockApproval, client models.Answer)
+	type mockBehavior func(r *handler_mocks.MockApproval, answer models.Answer)
 
 	logger, _ := test.NewNullLogger()
 
@@ -50,7 +50,7 @@ func TestHandler_updateStatus(t *testing.T) {
 		},
 		{
 			name:                 "Wrong Input",
-			inputBody:            `{"id": 126`,
+			inputBody:            `{"id": 126}`,
 			inputClient:          models.Answer{},
 			mockBehavior:         func(r *handler_mocks.MockApproval, answer models.Answer) {},
 			expectedStatusCode:   400,
