@@ -291,3 +291,162 @@ func TestHandler_getClient(t *testing.T) {
 		})
 	}
 }
+
+func TestHandler_deleteClient(t *testing.T) {
+
+	type mockBehavior func(r *handler_mocks.MockRegistry, client_id int)
+	logger, _ := test.NewNullLogger()
+
+	type fields struct {
+		approval Approval
+	}
+
+	tests := []struct {
+		name                 string
+		id_string            string
+		mockBehavior         mockBehavior
+		expectedStatusCode   int
+		expectedResponseBody string
+		fields
+	}{
+		{
+			name:      "Ok",
+			id_string: "32",
+			mockBehavior: func(r *handler_mocks.MockRegistry, client_id int) {
+				r.EXPECT().DeleteClient(client_id).Return(nil)
+			},
+			expectedStatusCode:   200,
+			expectedResponseBody: `{"message":"Client deleted successfully"}`,
+		},
+		{
+			name:                 "Empty input",
+			id_string:            "",
+			mockBehavior:         func(r *handler_mocks.MockRegistry, client_id int) {},
+			expectedStatusCode:   404,
+			expectedResponseBody: "404 page not found",
+		},
+		{
+			name:      "Service Error",
+			id_string: "32",
+			mockBehavior: func(r *handler_mocks.MockRegistry, client_id int) {
+				r.EXPECT().DeleteClient(client_id).Return(errors.New("internal server error"))
+			},
+			expectedStatusCode:   500,
+			expectedResponseBody: `{"message":"internal server error"}`,
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			c := gomock.NewController(t)
+			defer c.Finish()
+
+			handler_mock := handler_mocks.NewMockRegistry(c)
+
+			if test.id_string != "" {
+				id_int, _ := strconv.Atoi(test.id_string)
+				test.mockBehavior(handler_mock, id_int)
+			} else {
+				test.mockBehavior(handler_mock, 0)
+			}
+
+			h := &Handler{
+				log:      logger,
+				services: handler_mock,
+				approval: test.fields.approval,
+			}
+
+			r := gin.Default()
+			r.Use(func(c *gin.Context) {
+				c.Set("id", test.id_string)
+				c.Next()
+			})
+			r.DELETE("/delete/:id", h.deleteClient)
+
+			w := httptest.NewRecorder()
+			req := httptest.NewRequest("DELETE", "/delete/"+test.id_string,
+				nil)
+
+			r.ServeHTTP(w, req)
+
+			assert.Equal(t, w.Code, test.expectedStatusCode)
+			assert.Equal(t, w.Body.String(), test.expectedResponseBody)
+		})
+	}
+}
+
+func TestHandler_getStatistic(t *testing.T) {
+
+	statistic := models.Statistic{
+		TotalClients: 32,
+		Approved:     25,
+		Unapproved:   6,
+		Waiting:      1,
+	}
+
+	type mockBehavior func(r *handler_mocks.MockRegistry)
+	logger, _ := test.NewNullLogger()
+
+	type fields struct {
+		approval Approval
+	}
+
+	tests := []struct {
+		name                 string
+		mockBehavior         mockBehavior
+		expectedStatusCode   int
+		expectedResponseBody any
+		fields
+	}{
+		{
+			name: "Ok",
+			mockBehavior: func(r *handler_mocks.MockRegistry) {
+				r.EXPECT().GetStatistic().Return(statistic, nil)
+			},
+			expectedStatusCode:   200,
+			expectedResponseBody: statistic,
+		},
+		{
+			name: "Service Error",
+			mockBehavior: func(r *handler_mocks.MockRegistry) {
+				r.EXPECT().GetStatistic().Return(models.Statistic{}, errors.New("internal server error"))
+			},
+			expectedStatusCode:   500,
+			expectedResponseBody: `{"message":"internal server error"}`,
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			c := gomock.NewController(t)
+			defer c.Finish()
+
+			handler_mock := handler_mocks.NewMockRegistry(c)
+			test.mockBehavior(handler_mock)
+			h := &Handler{
+				log:      logger,
+				services: handler_mock,
+				approval: test.fields.approval,
+			}
+
+			r := gin.New()
+			r.GET("/statistic", h.getStatistic)
+
+			w := httptest.NewRecorder()
+			req := httptest.NewRequest("GET", "/statistic",
+				nil)
+			r.ServeHTTP(w, req)
+
+			var bufer *bytes.Buffer
+			if test.expectedStatusCode != 500 {
+				json_client, _ := json.Marshal(test.expectedResponseBody)
+				bufer = bytes.NewBuffer(json_client)
+			} else {
+				resp := test.expectedResponseBody
+				str := (resp).(string)
+				bufer = bytes.NewBuffer([]byte(str))
+			}
+
+			assert.Equal(t, w.Code, test.expectedStatusCode)
+			assert.Equal(t, w.Body, bufer)
+		})
+	}
+}
