@@ -54,7 +54,7 @@ func (h *Handler) getClient(c *gin.Context) {
 	
 	id, err := strconv.Atoi(c.Param("id"))
     if err!= nil {
-        newErrorResponse(c, http.StatusBadRequest, "invalid client ID")
+        newErrorResponse(c, http.StatusNotFound, "invalid client ID")
         return
     }
 
